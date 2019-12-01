@@ -1,0 +1,67 @@
+#lang at-exp racket
+
+(require website/bootstrap)
+
+;SVG lib
+
+(define/provide-attr x:)
+(define/provide-attr y:)
+(define/provide-attr d:)
+(define/provide-attr stroke:)
+(define/provide-attr fill:)
+(define/provide-attr orient:)
+(define/provide-attr markerWidth:)
+(define marker-width: markerWidth:)
+(define/provide-attr markerHeight:)
+(define marker-height: markerHeight:)
+(define/provide-attr refX:)
+(define ref-x: refX:)
+(define/provide-attr refY:)
+(define ref-y: refY:)
+
+(define (text . content)
+  (apply element (flatten (list 'text content))))
+
+(define (path . content)
+  (apply element (flatten (list 'path content))))
+
+(define (defs . content)
+  (apply element (flatten (list 'defs content))))
+
+(define/provide-extensible-element
+  questrial
+  text
+  (style: (properties font-family: "'Questrial', sans-serif"
+                      'letter-spacing: 4)
+          properties-join))
+
+(define (arrow-head)
+  (marker id: "head" orient: "auto" marker-width: "2" marker-height: "4"
+          ref-x: "0.1" ref-y: "2"
+          (path d: "M0,0 V4 L2,2 Z" fill: "black")))
+
+(define (logo)
+  (svg 'viewBox: "0 0 200 300" 'xmlns: "http://www.w3.org/2000/svg"
+    (defs
+      (arrow-head))
+    (questrial 
+      x: "20" y: "25"
+      "META") 
+    (questrial 
+      x: "30" y: "40"
+      "CODERS")
+    (path
+      d: "M 10 10 C 20 20, 40 20, 50 10"
+      stroke: "black"
+      fill: "transparent")))
+
+(define (test-page)
+  (page index.html
+        (content
+          #:head (include-css "https://fonts.googleapis.com/css?family=Questrial&display=swap")
+          
+          (logo))))
+
+(render (list (bootstrap-files)
+              (test-page))
+        #:to "out")
